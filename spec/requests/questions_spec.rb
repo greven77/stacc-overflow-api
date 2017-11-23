@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Questions API', type: :request do
   let(:user) { create(:user) }
-  let!(:questions) { create_list(:question, 10, author: user) }
+  let!(:questions) { create_list(:question, 10, author: user, tag_list: Faker::Lorem.words(3)) }
   let(:question_id) { questions.first.id }
 
   let(:headers) { valid_headers }
@@ -50,7 +50,8 @@ RSpec.describe 'Questions API', type: :request do
   describe 'POST /questions' do
     let(:valid_attributes) do
       {
-        title: 'How do I shot web?', content: 'I dunno LUL lorem', author_id: user.id.to_s
+        title: 'How do I shot web?', content: 'I dunno LUL lorem', author_id: user.id.to_s,
+        tag_list: ["javascript", "react", "redux"].to_s
       }.to_json
     end
 
@@ -60,6 +61,7 @@ RSpec.describe 'Questions API', type: :request do
       it 'creates a question' do
         expect(json['data']['attributes']['title']).to eq('How do I shot web?')
         expect(json['data']['attributes']['content']).to eq('I dunno LUL lorem')
+        expect(json['data']['relationships']['tags']['data'].count).to eq(3)
       end
 
       it 'returns status code 201' do
@@ -83,7 +85,8 @@ RSpec.describe 'Questions API', type: :request do
   end
 
   describe 'PUT /questions/:id' do
-    let(:valid_attributes) {{ title: 'not quite sure'}.to_json }
+    let(:valid_attributes) {{ title: 'not quite sure',
+                              tag_list: ["one", "two"]}.to_json }
 
     context 'when the record exists' do
       before { put "/questions/#{question_id}", params: valid_attributes, headers: headers  }

@@ -29,7 +29,7 @@ class QuestionsController < ApplicationController
   private
 
   def question_params
-    params.permit(:title, :content, :author_id)
+    params.permit(:title, :content, :author_id, :tag_list)
   end
 
   def set_question
