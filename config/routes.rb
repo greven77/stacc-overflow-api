@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   resources :users, only: [:show, :update]
 
   resources :questions do
+    collection do
+      get :tag_cloud
+    end
     resources :answers do
       member do
         put :vote
