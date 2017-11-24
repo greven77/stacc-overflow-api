@@ -1,4 +1,6 @@
 class AnswersController < ApplicationController
+  skip_before_action :authorize_request, only: [:index, :show]
+
   before_action :set_question
   before_action :set_question_answer, only: [:show, :update, :destroy, :vote]
 
