@@ -1,6 +1,6 @@
 class AnswersController < ApplicationController
   before_action :set_question
-  before_action :set_question_answer, only: [:show, :update, :destroy]
+  before_action :set_question_answer, only: [:show, :update, :destroy, :vote]
 
   def index
     #json_response(@question.answers)
@@ -17,8 +17,11 @@ class AnswersController < ApplicationController
   end
 
   def update
-    @answer.update(answer_params)
-    head :no_content
+    if @answer.update(answer_params)
+      json_response(@answer)
+    else
+      json_response(@answer.errors, :unprocessable_entity)
+    end
   end
 
   def destroy
@@ -26,10 +29,20 @@ class AnswersController < ApplicationController
     head :no_content
   end
 
+  def vote
+    vote = @answer.votes.find_or_create_by(user_id: current_user.id)
+    if vote.update_attributes(vote_value: params[:vote_value])
+      json_response(@answer)
+    else
+      json_response(vote.errors, :unprocessable_entity)
+    end
+  end
+
   private
 
   def answer_params
-    params.permit(:content, :user_id)
+    params.permit(:content, :user_id, :vote_value,
+                  :id, :question_id)
   end
 
   def set_question

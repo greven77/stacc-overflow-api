@@ -65,10 +65,10 @@ ActiveRecord::Schema.define(version: 20171123175002) do
     t.string "profile_pic"
   end
 
-  create_table "votes", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "votes", primary_key: ["user_id", "answer_id"], force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "vote_value", null: false
-    t.bigint "user_id"
-    t.bigint "answer_id"
+    t.bigint "user_id", null: false
+    t.bigint "answer_id", null: false
     t.index ["answer_id"], name: "index_votes_on_answer_id"
     t.index ["user_id"], name: "index_votes_on_user_id"
   end

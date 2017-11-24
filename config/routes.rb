@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   resources :users, only: [:show, :update]
 
   resources :questions do
-    resources :answers
+    resources :answers do
+      member do
+        put :vote
+      end
+    end
   end
 end

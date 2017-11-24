@@ -24,6 +24,7 @@ gem "validates_email_format_of", '~> 1.6.3'
 
 gem 'will_paginate'
 gem 'api-pagination'
+gem 'composite_primary_keys', ' ~> 10.0.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production

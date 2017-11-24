@@ -56,6 +56,8 @@ GEM
       mime-types (>= 1.16)
     case_transform (0.2)
       activesupport
+    composite_primary_keys (10.0.1)
+      activerecord (~> 5.1.0)
     concurrent-ruby (1.0.5)
     crass (1.0.3)
     database_cleaner (1.6.2)
@@ -222,6 +224,7 @@ DEPENDENCIES
   api-pagination
   byebug
   carrierwave (~> 1.1.0)
+  composite_primary_keys (~> 10.0.0)
   database_cleaner
   devise (~> 4.3.0)
   factory_girl_rails (~> 4.5.0)

@@ -6,7 +6,8 @@ RSpec.describe 'Answers API' do
   let!(:answers) { create_list(:answer, 20, user_id: user.id, question_id: question.id) }
   let(:question_id) { question.id }
   let(:user_id) { user.id }
-  let(:id) { answers.first.id }
+  let!(:id) { answers.first.id }
+  let!(:answer) { answers.first }
   let(:headers) { valid_headers }
 
   describe 'GET /questions/:question_id/answers' do
@@ -91,8 +92,8 @@ RSpec.describe 'Answers API' do
     before { put "/questions/#{question_id}/answers/#{id}", params: valid_attributes, headers: headers }
 
     context 'when answer exists' do
-      it 'returns status code 204' do
-        expect(response).to have_http_status(204)
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
       end
 
       it 'updates the answer' do
