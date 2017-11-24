@@ -6,4 +6,5 @@ class User < ApplicationRecord
   mount_uploader :profile_pic, ProfilePicUploader
 
   validates_presence_of :username, :email, :password_digest
+  validates_uniqueness_of :email, :username
 end
