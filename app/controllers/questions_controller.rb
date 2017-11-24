@@ -2,7 +2,9 @@ class QuestionsController < ApplicationController
   before_action :set_question, only: [:show, :update, :destroy]
 
   def index
-    questions = Question.all
+    sort_param = params[:sort] || "id"
+    dir_param = params[:sort_dir] || "ASC"
+    questions = Question.order(sort_param => dir_param)
     #json_response(questions)
     paginate json: questions, status: :ok, per_page: 20
   end
@@ -29,7 +31,7 @@ class QuestionsController < ApplicationController
   private
 
   def question_params
-    params.permit(:title, :content, :author_id, :tag_list)
+    params.permit(:title, :content, :author_id, :tag_list, :sort, :sort_dir)
   end
 
   def set_question

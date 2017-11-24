@@ -3,8 +3,11 @@ class AnswersController < ApplicationController
   before_action :set_question_answer, only: [:show, :update, :destroy, :vote]
 
   def index
+    sort_param = params[:sort] || "id"
+    dir_param = params[:sort_dir] || "ASC"
+    answers = @question.answers.order(sort_param => dir_param)
     #json_response(@question.answers)
-    paginate json: @question.answers, status: :ok, per_page: 20
+    paginate json: answers, status: :ok, per_page: 20
   end
 
   def show
@@ -42,7 +45,7 @@ class AnswersController < ApplicationController
 
   def answer_params
     params.permit(:content, :user_id, :vote_value,
-                  :id, :question_id)
+                  :id, :question_id, :sort, :sort_dir)
   end
 
   def set_question
