@@ -20,6 +20,8 @@ class Question < ApplicationRecord
 
   validates_presence_of :title, :content
 
+  validate :valid_correct_answer_id
+
   def self.sortedBy(keyword, tag = "")
     case keyword
     when "votes"
@@ -37,5 +39,11 @@ class Question < ApplicationRecord
     else
       self.most_voted
     end
+  end
+
+  def valid_correct_answer_id
+    answers.find(correct_answer_id)
+  rescue ActiveRecord::RecordNotFound
+    errors.add(:correct_answer_id, "invalid answer id")
   end
 end

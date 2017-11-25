@@ -51,7 +51,7 @@ class QuestionsController < ApplicationController
 
   def question_params
     params.permit(:title, :content, :author_id, :tag_list, :sort, :sort_dir, :tagged_with,
-                  :vote_value, :per_page)
+                  :vote_value, :per_page, :correct_answer_id)
   end
 
   def set_question

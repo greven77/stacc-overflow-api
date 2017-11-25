@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171125160759) do
+ActiveRecord::Schema.define(version: 20171125221829) do
 
   create_table "answers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.text "content"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20171125160759) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cached_weighted_score", default: 0
+    t.integer "correct_answer_id"
     t.index ["author_id"], name: "index_questions_on_author_id"
     t.index ["cached_weighted_score"], name: "index_questions_on_cached_weighted_score"
   end
