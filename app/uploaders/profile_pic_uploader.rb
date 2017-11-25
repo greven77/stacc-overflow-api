@@ -23,15 +23,19 @@ class ProfilePicUploader < CarrierWave::Uploader::Base
   # end
 
   # Process files as they are uploaded:
-  process resize_to_fit: [300, 300]
+  process resize_to_fit: [200, 200]
   #
   # def scale(width, height)
   #   # do something
   # end
 
   # Create different versions of your uploaded files:
-  version :thumb do
-     process resize_to_fit: [150, 150]
+  version :post_avatar do
+     process resize_to_fit: [64, 64]
+  end
+
+  version :menu_avatar do
+    process resize_to_fit: [48, 48]
   end
 
   # Add a white list of extensions which are allowed to be uploaded.

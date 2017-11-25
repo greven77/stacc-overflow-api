@@ -13,7 +13,9 @@ class QuestionsController < ApplicationController
   end
 
   def create
-    question = Question.create!(question_params)
+    qp = question_params
+    qp["author_id"] = current_user.id
+    question = Question.create!(qp)
     json_response(question, :created)
   end
 
@@ -22,11 +24,13 @@ class QuestionsController < ApplicationController
   end
 
   def update
+    authorize @question, :update?
     @question.update(question_params)
     head :no_content
   end
 
   def destroy
+    authorize @question, :destroy?
     @question.destroy
     head :no_content
   end

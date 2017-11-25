@@ -17,11 +17,14 @@ class AnswersController < ApplicationController
   end
 
   def create
-    @question.answers.create!(answer_params)
+    ap = answer_params
+    ap["user_id"] = current_user.id
+    @question.answers.create!(ap)
     json_response(@question, :created)
   end
 
   def update
+    authorize @answer, :update?
     if @answer.update(answer_params)
       json_response(@answer)
     else
@@ -30,11 +33,13 @@ class AnswersController < ApplicationController
   end
 
   def destroy
+    authorize @answer, :destroy?
     @answer.destroy
     head :no_content
   end
 
   def vote
+    authorize @answer, :vote?
     vote = @answer.votes.find_or_create_by(user_id: current_user.id)
     if vote.update_attributes(vote_value: params[:vote_value])
       json_response(@answer)
