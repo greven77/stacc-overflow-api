@@ -18,9 +18,9 @@ class AnswersController < ApplicationController
 
   def create
     ap = answer_params
-    ap["user_id"] = current_user.id
-    @question.answers.create!(ap)
-    json_response(@question, :created)
+    ap["author_id"] = current_user.id
+    answer = @question.answers.create!(ap)
+    json_response(answer, :created)
   end
 
   def update
@@ -40,12 +40,7 @@ class AnswersController < ApplicationController
 
   def vote
     authorize @answer, :vote?
-    vote = @answer.votes.find_or_create_by(user_id: current_user.id)
-    if vote.update_attributes(vote_value: params[:vote_value])
-      json_response(@answer)
-    else
-      json_response(vote.errors, :unprocessable_entity)
-    end
+    doVote(@answer, current_user, params[:vote_value])
   end
 
   private

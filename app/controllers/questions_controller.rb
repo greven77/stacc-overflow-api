@@ -1,7 +1,7 @@
 class QuestionsController < ApplicationController
   skip_before_action :authorize_request, only: [:index, :show]
 
-  before_action :set_question, only: [:show, :update, :destroy]
+  before_action :set_question, only: [:show, :update, :destroy, :vote]
 
   def index
     sort_param = params[:sort] || "id"
@@ -39,10 +39,17 @@ class QuestionsController < ApplicationController
     json_response(ActsAsTaggableOn::Tag.most_used)
   end
 
+  def vote
+    authorize @question, :vote?
+    doVote(@question, current_user, params[:vote_value])
+    #head :no_content
+  end
+
   private
 
   def question_params
-    params.permit(:title, :content, :author_id, :tag_list, :sort, :sort_dir, :tagged_with)
+    params.permit(:title, :content, :author_id, :tag_list, :sort, :sort_dir, :tagged_with,
+                  :vote_value)
   end
 
   def set_question

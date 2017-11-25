@@ -6,7 +6,7 @@ class AnswerPolicy < ApplicationPolicy
   end
 
   def update?
-    record.user == user
+    record.author == user
   end
 
   def destroy?

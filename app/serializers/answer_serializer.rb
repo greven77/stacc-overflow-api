@@ -1,11 +1,8 @@
 class AnswerSerializer < ActiveModel::Serializer
-  attributes :id, :content, :total_votes, :username
+  attributes :id, :content, :weighted_score
+  has_one :author
 
-  def total_votes
-    object.total_votes
-  end
-
-  def username
-    object.user.username
+  def weighted_score
+    object.weighted_score
   end
 end

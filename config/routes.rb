@@ -8,6 +8,11 @@ Rails.application.routes.draw do
     collection do
       get :tag_cloud
     end
+
+    member do
+      put :vote
+    end
+
     resources :answers do
       member do
         put :vote

@@ -45,6 +45,7 @@ GEM
       tzinfo (~> 1.1)
     acts-as-taggable-on (5.0.0)
       activerecord (>= 4.2.8)
+    acts_as_votable (0.11.1)
     api-pagination (4.6.3)
     arel (8.0.0)
     bcrypt (3.1.11)
@@ -221,6 +222,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers (~> 0.10.6)
   acts-as-taggable-on (~> 5.0)
+  acts_as_votable (~> 0.11.1)
   api-pagination
   byebug
   carrierwave (~> 1.1.0)

@@ -12,4 +12,8 @@ class QuestionPolicy < ApplicationPolicy
   def destroy?
     update?
   end
+
+  def vote?
+    !update?
+  end
 end

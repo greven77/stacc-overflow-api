@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   include Response
+  include Vote
   include ExceptionHandler
   include Pundit
 
