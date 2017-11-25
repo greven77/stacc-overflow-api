@@ -9,7 +9,13 @@ class AnswersController < ApplicationController
     dir_param = params[:sort_dir] || "ASC"
     answers = @question.answers.order(sort_param => dir_param)
     #json_response(@question.answers)
-    paginate json: answers, status: :ok, per_page: 20
+    paginate json: answers, status: :ok, per_page: params[:per_page] || 20
+  end
+
+  def top
+    dir_param = params[:sort_dir] || "DESC"
+    answers = Answer.order(:cached_weighted_score => dir_param)
+    paginate json: answers, status: :ok, per_page: params[:per_page] || 20
   end
 
   def show
@@ -47,7 +53,8 @@ class AnswersController < ApplicationController
 
   def answer_params
     params.permit(:content, :user_id, :vote_value,
-                  :id, :question_id, :sort, :sort_dir)
+                  :id, :question_id, :sort, :sort_dir,
+                  :per_page)
   end
 
   def set_question

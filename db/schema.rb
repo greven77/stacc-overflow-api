@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171125124410) do
+ActiveRecord::Schema.define(version: 20171125160759) do
 
   create_table "answers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.text "content"
@@ -18,7 +18,9 @@ ActiveRecord::Schema.define(version: 20171125124410) do
     t.bigint "question_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "cached_weighted_score", default: 0
     t.index ["author_id"], name: "index_answers_on_author_id"
+    t.index ["cached_weighted_score"], name: "index_answers_on_cached_weighted_score"
     t.index ["question_id"], name: "index_answers_on_question_id"
   end
 
@@ -28,7 +30,9 @@ ActiveRecord::Schema.define(version: 20171125124410) do
     t.bigint "author_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "cached_weighted_score", default: 0
     t.index ["author_id"], name: "index_questions_on_author_id"
+    t.index ["cached_weighted_score"], name: "index_questions_on_cached_weighted_score"
   end
 
   create_table "taggings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

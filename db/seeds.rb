@@ -18,11 +18,11 @@ end
 def vote(object, user, vote_value)
   case vote_value
   when -1
-    object.vote_from user
+    object.downvote_from user
   when 0
     object.unliked_by user
   when 1
-    object.downvote_from user
+    object.vote_from user
   else
     false
   end
