@@ -7,7 +7,6 @@ Rails.application.routes.draw do
   resources :questions do
     collection do
       get :tag_cloud
-      get :top
     end
 
     member do
@@ -17,7 +16,6 @@ Rails.application.routes.draw do
     resources :answers do
       member do
         put :vote
-        get :top
       end
     end
   end

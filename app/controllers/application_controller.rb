@@ -3,6 +3,7 @@ class ApplicationController < ActionController::API
   include Vote
   include ExceptionHandler
   include Pundit
+  include Sort
 
   before_action :authorize_request
   attr_reader :current_user

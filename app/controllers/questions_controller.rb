@@ -4,18 +4,15 @@ class QuestionsController < ApplicationController
   before_action :set_question, only: [:show, :update, :destroy, :vote]
 
   def index
-    sort_param = params[:sort] || "id"
-    dir_param = params[:sort_dir] || "ASC"
-    question_entity = params[:tagged_with] ? Question.tagged_with(params[:tagged_with]) : Question
-    questions = question_entity.order(sort_param => dir_param)
-    #json_response(questions)
-    paginate json: questions, status: :ok, per_page: params[:per_page] || 20
+    questions = Question.sortedBy(params[:sort]) || Question.most_voted
+    paginate json: questions, status: :ok, per_page: params[:per_page] || 15
   end
 
-  def top
-    dir_param = params[:sort_dir] || "DESC"
-    questions = Question.order(:cached_weighted_score => dir_param)
-    paginate json: questions, status: :ok, per_page: 15
+  # can be ordered by votes, newest and unanswered
+  def tagged
+    tagged_questions = Question.tagged_with(params[:tagged_with])
+    sorted_tagged_questions = tagged_questions.sortedBy(params[:sort])
+    paginate sorted_tagged_questions, status: ok, per_page: params[:per_page] || 15
   end
 
   def create
