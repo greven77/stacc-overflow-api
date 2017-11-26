@@ -4,6 +4,12 @@ Rails.application.routes.draw do
 
   resources :users, only: [:show, :update]
 
+  resources :tags, only: [:index] do
+    collection do
+      get :search
+    end
+  end
+
   resources :questions do
     collection do
       get :tag_cloud
