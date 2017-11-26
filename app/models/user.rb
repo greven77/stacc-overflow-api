@@ -7,4 +7,5 @@ class User < ApplicationRecord
 
   validates_presence_of :username, :email, :password_digest
   validates_uniqueness_of :email, :username
+  validates :email, :email_format => { :message => 'is not looking good' }
 end
