@@ -2,6 +2,9 @@ class Question < ApplicationRecord
   acts_as_taggable
   acts_as_votable
 
+  scope :search_import, -> { includes(:tags) }
+  searchkick searchable: [:content, :title, :name_tagged]
+
   scope :unanswered, -> { joins(:answers)
                             .select('questions.*, COUNT(*) AS answer_count')
                             .group('id')
@@ -21,6 +24,14 @@ class Question < ApplicationRecord
   validates_presence_of :title, :content
 
   validate :valid_correct_answer_id
+
+  def search_data
+    {
+      title: title,
+      content: content,
+      name_tagged: "#{tags.map(&:name).join(" ")}"
+    }
+  end
 
   def self.sortedBy(keyword, tag = "")
     case keyword
@@ -42,6 +53,7 @@ class Question < ApplicationRecord
   end
 
   def valid_correct_answer_id
+    return if correct_answer_id.nil?
     answers.find(correct_answer_id)
   rescue ActiveRecord::RecordNotFound
     errors.add(:correct_answer_id, "invalid answer id")

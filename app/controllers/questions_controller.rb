@@ -1,5 +1,5 @@
 class QuestionsController < ApplicationController
-  skip_before_action :authorize_request, only: [:index, :show, :top]
+  skip_before_action :authorize_request, only: [:index, :show, :top, :search, :tagged, :tag_cloud]
 
   before_action :set_question, only: [:show, :update, :destroy, :vote]
 
@@ -12,7 +12,7 @@ class QuestionsController < ApplicationController
   def tagged
     tagged_questions = Question.tagged_with(params[:tagged_with])
     sorted_tagged_questions = tagged_questions.sortedBy(params[:sort])
-    paginate sorted_tagged_questions, status: ok, per_page: params[:per_page] || 15
+    paginate json: sorted_tagged_questions, status: :ok, per_page: params[:per_page] || 15
   end
 
   def create
@@ -47,11 +47,16 @@ class QuestionsController < ApplicationController
     doVote(@question, current_user, params[:vote_value])
   end
 
+  def search
+    questions = Question.search params[:search], page: params[:page], per_page: params[:per_page]
+    json_response(questions)
+  end
+
   private
 
   def question_params
     params.permit(:title, :content, :author_id, :tag_list, :sort, :sort_dir, :tagged_with,
-                  :vote_value, :per_page, :correct_answer_id)
+                  :vote_value, :per_page, :correct_answer_id, :search)
   end
 
   def set_question

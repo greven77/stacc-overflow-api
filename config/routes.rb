@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   resources :questions do
     collection do
       get :tag_cloud
+      get :search
+      get '/tagged/:tagged_with', to: "questions#tagged"
     end
 
     member do
