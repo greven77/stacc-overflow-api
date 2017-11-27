@@ -10,6 +10,12 @@ class Question < ApplicationRecord
                             .group('id')
                             .having("answer_count = 0")}
 
+  scope :tagged, -> { joins(:tags)
+                        .select('questions.*, COUNT(*) AS tag_count')
+                        .group('id')
+                        .having("tag_count > 0")
+                        }
+
   scope :week, -> { where("created_at >= ?", 1.week.ago) }
 
   scope :month, -> { where("created_at >= ?", 1.month.ago) }
