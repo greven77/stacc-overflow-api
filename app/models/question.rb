@@ -39,6 +39,19 @@ class Question < ApplicationRecord
     }
   end
 
+  def self.get_user_votes(current_user, question)
+    {
+      question: current_user.voted_for?(question),
+      answers: self.get_voted_answers(question.id, current_user.id)
+    }
+  end
+
+  def self.get_voted_answers(question_id, current_user_id)
+    Question.joins("INNER JOIN answers ON questions.id = answers.question_id INNER JOIN votes ON votes.votable_id = answers.id WHERE questions.id = #{question_id} AND votes.voter_id = #{current_user_id}").
+      select('questions.id AS question_id, answers.id AS answer_id, votes.vote_flag').
+      map { |vote| vote.slice("answer_id", "vote_flag") }
+  end
+
   def self.sortedBy(keyword, tag = "")
     case keyword
     when "votes"

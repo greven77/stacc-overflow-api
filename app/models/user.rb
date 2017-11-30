@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  acts_as_voter
   has_secure_password
   has_many :questions, dependent: :delete_all, foreign_key: "author_id"
   has_many :answers, dependent: :delete_all, foreign_key: "author_id"

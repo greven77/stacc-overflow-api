@@ -20,4 +20,12 @@ class Answer < ApplicationRecord
       false
     end
   end
+
+  #improve this to get votes and downvotes
+  def self.get_user_question_votes(current_user, question)
+    {
+      current_question: current_user.voted_for?(question),
+      answers: current_user.get_voted(question.answers).pluck(:id)
+    }
+  end
 end

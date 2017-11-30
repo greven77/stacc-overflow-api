@@ -6,7 +6,7 @@ class QuestionSerializer < ActiveModel::Serializer
   #has_many :tags
 
   def weighted_score
-    object.weighted_score
+    object.cached_weighted_score
   end
 
   def answer_count
