@@ -1,7 +1,9 @@
 class QuestionsController < ApplicationController
   skip_before_action :authorize_request, only: [:index, :show, :top, :search, :tagged, :tag_cloud]
 
-  before_action :set_question, only: [:show, :update, :destroy, :vote]
+  before_action :set_question, only: [:show, :update, :destroy, :vote, :thread]
+
+  before_action :set_user_votes, only: [:thread]
 
   def index
     questions = Question.sortedBy(params[:sort]) || Question.most_voted
@@ -26,6 +28,10 @@ class QuestionsController < ApplicationController
 
   def show
     json_response(@question)
+  end
+
+  def thread
+    render json: @question, thread: true, status: :ok, meta: { votes: @votes }
   end
 
   def update
@@ -63,5 +69,19 @@ class QuestionsController < ApplicationController
 
   def set_question
     @question = Question.find(params[:id])
+  end
+
+  def set_user_votes
+    user = get_user
+    @votes = user ? Question.get_user_votes(user, @question) : ""
+  end
+
+  def get_user
+    if current_user
+      current_user
+    else
+       user_id = JsonWebToken.decode(request.headers['Authorization'])["user_id"]
+       User.find(user_id)
+    end
   end
 end

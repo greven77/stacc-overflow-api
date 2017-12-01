@@ -1,9 +1,9 @@
 class AnswerSerializer < ActiveModel::Serializer
-  attributes :id, :content, :weighted_score,
+  attributes :id, :content, :votes,
              :created_at, :updated_at
   has_one :author
 
-  def weighted_score
-    object.weighted_score
+  def votes
+    object.cached_weighted_score
   end
 end

@@ -3,15 +3,12 @@ class AnswersController < ApplicationController
 
   before_action :set_question
   before_action :set_question_answer, only: [:show, :update, :destroy, :vote]
-  before_action :set_user_votes, only: [:index]
 
   def index
     #vm = @votes[:answers].map { |vote| vote.slice("answer_id", "vote_flag") }
     answers = @question.answers.sortedBy(params[:sort]) || @question.answers.oldest
     paginate json: answers, status: :ok, per_page: params[:per_page] || 20,
-             meta: { total: @question.answers.count,
-                     votes: @votes
-                   }
+             meta: { total: @question.answers.count }
   end
 
   def show
@@ -59,19 +56,5 @@ class AnswersController < ApplicationController
 
   def set_question_answer
     @answer = @question.answers.find_by!(id: params[:id]) if @question
-  end
-
-  def set_user_votes
-    user = get_user
-    @votes = user ? Question.get_user_votes(user, @question) : ""
-  end
-
-  def get_user
-    if current_user
-      current_user
-    else
-       user_id = JsonWebToken.decode(request.headers['Authorization'])["user_id"]
-       User.find(user_id)
-    end
   end
 end
