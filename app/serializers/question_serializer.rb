@@ -29,7 +29,9 @@ class QuestionSerializer < ActiveModel::Serializer
   end
 
   def thread?
-    @instance_options[:thread][:display]
+    @instance_options[:thread] ?
+      @instance_options[:thread][:display]
+      : false
   end
 
   def user_votes
