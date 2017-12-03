@@ -17,7 +17,7 @@ class Answer < ApplicationRecord
     when "oldest"
       self.oldest
     else
-      false
+      self.oldest
     end
   end
 

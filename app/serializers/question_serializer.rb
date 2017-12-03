@@ -2,9 +2,16 @@ class QuestionSerializer < ActiveModel::Serializer
   attributes :id, :title, :content, :votes, :correct_answer_id,
              :created_at, :updated_at, :author, :tags, :answer_count
   attribute :answers, if: :thread? do
-     ActiveModelSerializers::SerializableResource.new(object.answers)
+    sorted_by = @instance_options[:thread][:sorted_by]
+    page = @instance_options[:thread][:page]
+    answers = object.answers
+                .sortedBy(sorted_by)
+                .page(page)
+                .per_page(30)
+    ActiveModelSerializers::SerializableResource.new(answers).serializer_instance
   end
 
+  attribute :user_votes, if: :thread?
   #has_one :author
   has_many :answers, unless: :thread?
   #has_many :tags
@@ -22,7 +29,11 @@ class QuestionSerializer < ActiveModel::Serializer
   end
 
   def thread?
-    @instance_options[:thread]
+    @instance_options[:thread][:display]
+  end
+
+  def user_votes
+    @instance_options[:thread][:user_votes]
   end
 
 #  def attributes

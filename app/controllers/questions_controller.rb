@@ -1,5 +1,5 @@
 class QuestionsController < ApplicationController
-  skip_before_action :authorize_request, only: [:index, :show, :top, :search, :tagged, :tag_cloud]
+  skip_before_action :authorize_request, only: [:index, :show, :top, :search, :tagged, :tag_cloud, :thread]
 
   before_action :set_question, only: [:show, :update, :destroy, :vote, :thread]
 
@@ -31,7 +31,13 @@ class QuestionsController < ApplicationController
   end
 
   def thread
-    render json: @question, thread: true, status: :ok, meta: { votes: @votes }
+    total = @question.answers.count
+    response.set_header("total", total)
+    response.set_header("per-page", 30)
+    response.set_header("x-page", params[:page] || 1)
+    render json: @question, thread: { display: true, sorted_by: params[:sort],
+                                      page: params[:page], user_votes: @user_votes},
+             status: :ok, meta: { total: total }
   end
 
   def update
@@ -73,15 +79,17 @@ class QuestionsController < ApplicationController
 
   def set_user_votes
     user = get_user
-    @votes = user ? Question.get_user_votes(user, @question) : ""
+    @user_votes = user ? Question.get_user_votes(user, @question) : ""
   end
 
   def get_user
     if current_user
       current_user
-    else
+    elsif request.headers['Authorization']
        user_id = JsonWebToken.decode(request.headers['Authorization'])["user_id"]
        User.find(user_id)
+    else
+      nil
     end
   end
 end
