@@ -41,15 +41,25 @@ class Question < ApplicationRecord
 
   def self.get_user_votes(current_user, question)
     {
-      question: current_user.voted_for?(question),
+      question: self.get_voted_question(current_user, question),
       answers: self.get_voted_answers(question.id, current_user.id)
     }
   end
 
+  def self.get_voted_question(current_user, question)
+    vote_value = current_user.voted_as_when_voted_for(question)
+    vote_value.nil? ?
+      0 :
+      vote_value ? 1 : -1
+  end
+
   def self.get_voted_answers(question_id, current_user_id)
     Question.joins("INNER JOIN answers ON questions.id = answers.question_id INNER JOIN votes ON votes.votable_id = answers.id WHERE questions.id = #{question_id} AND votes.voter_id = #{current_user_id}").
-      select('questions.id AS question_id, answers.id AS votable_id, votes.vote_flag').
-      map { |vote| vote.slice("votable_id", "vote_flag") }
+      select('questions.id AS question_id, answers.id AS votable_id, votes.vote_flag')
+      .map do |vote|
+        vote.vote_flag = vote.vote_flag == 0 ? -1 : vote.vote_flag
+        vote.slice("votable_id", "vote_flag")
+    end
   end
 
   def self.sortedBy(keyword, tag = "")

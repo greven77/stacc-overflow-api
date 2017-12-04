@@ -36,7 +36,7 @@ class QuestionsController < ApplicationController
     response.set_header("per-page", 30)
     response.set_header("x-page", params[:page] || 1)
     render json: @question, thread: { display: true, sorted_by: params[:sort],
-                                      page: params[:page], user_votes: @user_votes},
+                                      page: params[:page], user_votes: @user_votes.as_json},
              status: :ok, meta: { total: total }
   end
 

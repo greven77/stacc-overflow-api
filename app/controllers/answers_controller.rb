@@ -39,6 +39,8 @@ class AnswersController < ApplicationController
 
   def vote
     authorize @answer, :vote?
+    puts current_user.id
+    puts @answer.author.id
     doVote(@answer, current_user, params[:vote_value])
   end
 
