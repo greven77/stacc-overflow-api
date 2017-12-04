@@ -48,9 +48,10 @@ class Question < ApplicationRecord
 
   def self.get_voted_question(current_user, question)
     vote_value = current_user.voted_as_when_voted_for(question)
-    vote_value.nil? ?
+    vote_flag = vote_value.nil? ?
       0 :
       vote_value ? 1 : -1
+    { vote_flag: vote_flag }
   end
 
   def self.get_voted_answers(question_id, current_user_id)
