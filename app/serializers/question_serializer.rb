@@ -8,6 +8,7 @@ class QuestionSerializer < ActiveModel::Serializer
                 .sortedBy(sorted_by)
                 .page(page)
                 .per_page(30)
+    @instance_options[:answers] = answers
     ActiveModelSerializers::SerializableResource.new(answers).serializer_instance
   end
 
@@ -15,6 +16,10 @@ class QuestionSerializer < ActiveModel::Serializer
   #has_one :author
   has_many :answers, unless: :thread?
   #has_many :tags
+  attribute :answer_ids, if: :thread? do
+    @instance_options[:answers].pluck(:id)
+  end
+
 
   def votes
     object.cached_weighted_score
