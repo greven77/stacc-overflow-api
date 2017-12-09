@@ -7,18 +7,20 @@ class QuestionsController < ApplicationController
 
   def index
     questions = Question.sortedBy(params[:sort]) || Question.most_voted
-    paginate json: questions, status: :ok, per_page: params[:per_page] || 15,
+    per_page = params[:per_page] || 15
+    questions = paginate questions, per_page: per_page
+    render json: questions, status: :ok,
              meta: { total: Question.count, ids: questions.pluck(:id) }
   end
 
   # can be ordered by votes, newest and unanswered
   def tagged
-    tagged_questions = Question.tagged_with(params[:tagged_with])
-    sorted_tagged_questions = tagged_questions.sortedBy(params[:sort])
-    paginate json: sorted_tagged_questions, status: :ok,
-             per_page: params[:per_page] || 15,
-             meta: { total: sorted_tagged_questions.length,
-                     ids: sorted_tagged_questions.pluck(:id)
+    per_page = params[:per_page] || 15
+    tagged_questions = paginate Question.tagged_with(params[:tagged_with])
+                                  .sortedBy(params[:sort]), per_page: per_page
+    render json: tagged_questions, status: :ok,
+             meta: { total: Question.tagged_with(params[:tagged_with]).count,
+                     ids: tagged_questions.pluck(:id)
                    }
   end
 
