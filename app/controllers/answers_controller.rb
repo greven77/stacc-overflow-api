@@ -6,9 +6,13 @@ class AnswersController < ApplicationController
 
   def index
     #vm = @votes[:answers].map { |vote| vote.slice("answer_id", "vote_flag") }
+    per_page = params[:per_page] || 20,
     answers = @question.answers.sortedBy(params[:sort]) || @question.answers.oldest
-    paginate json: answers, status: :ok, per_page: params[:per_page] || 20,
-             meta: { total: @question.answers.count }
+    paginated_answers = paginate answers, per_page
+    render json: paginated_answers, status: :ok,
+           meta: { total: @question.answers.count,
+                   ids: paginated_answers.map(&:id)
+                 }
   end
 
   def show
