@@ -36,6 +36,8 @@ class Question < ApplicationRecord
 
   validate :valid_correct_answer_id
 
+  validate :validate_tags
+
   def search_data
     {
       title: title,
@@ -93,5 +95,12 @@ class Question < ApplicationRecord
     answers.find(correct_answer_id)
   rescue ActiveRecord::RecordNotFound
     errors.add(:correct_answer_id, "invalid answer id")
+  end
+
+  def validate_tags
+    tag_list.each do |tag|
+      valid_tag = tag.length <= 30 && !tag.match(/\s/)
+      errors.add(:tag_list, "Invalid tag") unless valid_tag
+    end
   end
 end
