@@ -1,7 +1,7 @@
 module TagHelper
   def sortedBy(keyword)
     case keyword
-    when "taggings_count"
+    when "popular"
       {taggings_count: :desc}
     when "name"
       {name: :asc}

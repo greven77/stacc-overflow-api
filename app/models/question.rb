@@ -3,12 +3,17 @@ class Question < ApplicationRecord
   acts_as_votable
 
   scope :search_import, -> { includes(:tags) }
-  searchkick searchable: [:content, :title, :name_tagged]
+  searchkick searchable: [:content, :title, :name_tagged, :cached_weighted_score]
 
   scope :unanswered, -> { joins(:answers)
                             .select('questions.*, COUNT(*) AS answer_count')
                             .group('id')
                             .having("answer_count = 0")}
+
+  scope :unanswered, -> { joins('LEFT OUTER JOIN answers ON answers.question_id = questions.id')
+                            .select('questions.*, COUNT(answers.question_id) AS answer_count')
+                            .group('questions.id')
+                            .having('answer_count = 0')}
 
   scope :tagged, -> { joins(:tags)
                         .select('questions.*, COUNT(*) AS tag_count')
@@ -35,7 +40,8 @@ class Question < ApplicationRecord
     {
       title: title,
       content: content,
-      name_tagged: "#{tags.map(&:name).join(" ")}"
+      name_tagged: "#{tags.map(&:name).join(" ")}",
+      cached_weighted_score: cached_weighted_score
     }
   end
 

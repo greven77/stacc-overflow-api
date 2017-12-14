@@ -67,8 +67,13 @@ class QuestionsController < ApplicationController
   end
 
   def search
-    questions = Question.search params[:search], page: params[:page], per_page: params[:per_page]
-    json_response(questions)
+    response.set_header("per-page", params[:per_page] || 40)
+    response.set_header("x-page", params[:page] || 1)
+    questions = Question.search params[:search], page: params[:page],
+                                per_page: params[:per_page], order: sortedSearch(params[:sort])
+    total = questions.total_count
+    response.set_header("total", total)
+    render json: questions, meta: { total: total, ids: questions.map(&:id)}
   end
 
   private

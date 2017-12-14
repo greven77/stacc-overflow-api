@@ -8,9 +8,10 @@ class TagsController < ApplicationController
 
   #params[:sort] -> taggings_count || name
   def index
-    sort_param = params[:sort] || "taggings_count"
-    dir_param = params[:sort] == "taggings_count" ? "DESC" : "ASC"
-    paginate json: ActsAsTaggableOn::Tag.order(sort_param => dir_param), per_page: 40
+    paginated_tags  = paginate ActsAsTaggableOn::Tag.order(sortedBy(params[:sort])),
+                               per_page: params[:per_page] || 40
+    render json: paginated_tags, status: :ok,
+           meta: { ids: paginated_tags.map(&:id) }
   end
 
   def search
